@@ -1,6 +1,7 @@
 module Lens exposing (..)
 
 import Array exposing (Array)
+import String
 
 type alias Lens a b =
   { get: a -> b
@@ -21,6 +22,9 @@ lens get set =
   { get = get
   , modify = \b2b a -> set (b2b (get a)) a
   }
+
+iso : (a -> b) -> (b -> a) -> Lens a b
+iso a2b b2a = lens a2b (\b _ -> b2a b)
 
 (>>>) : Lens a b -> Lens b c -> Lens a c
 (>>>) abL bcL =
@@ -50,3 +54,10 @@ withDefault b abML =
   { get = abML.get >> Maybe.withDefault b
   , modify = \b2b -> abML.modify (\bM -> Just (b2b (Maybe.withDefault b bM)))
   }
+
+intAsString : Lens Int String
+intAsString =
+  iso toString
+      (\s -> case String.toInt s of
+               Ok i -> i
+               Err _ -> 0)

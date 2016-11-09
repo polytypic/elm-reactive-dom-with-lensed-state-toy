@@ -2,6 +2,7 @@ module Dom exposing (..)
 
 import Lens exposing (Lens)
 import Html
+import Html.Attributes
 import Html.Events as Events
 
 --
@@ -38,16 +39,16 @@ toBeginnerProgram m html =
 text : String -> Html m
 text s = always (Html.text s)
 
-view : Lens m String -> Html m
-view msL = Lens.get msL >> Html.text
+textL : Lens m String -> Html m
+textL msL = Lens.get msL >> Html.text
 
-viewAs : (a -> String) -> Lens m a -> Html m
-viewAs a2s maL = Lens.get maL >> a2s >> Html.text
+textAs : (a -> String) -> Lens m a -> Html m
+textAs a2s maL = Lens.get maL >> a2s >> Html.text
 
 --
 
-withState : (a -> Html m) -> Lens m a -> Html m
-withState a2mH maL m = a2mH (Lens.get maL m) m
+withState : (a -> m -> r) -> Lens m a -> m -> r
+withState a2r maL m = a2r (Lens.get maL m) m
 
 --
 
@@ -67,3 +68,23 @@ span = liftElem Html.span
 
 onClick : Msg m -> Attribute m
 onClick msg = always (Events.onClick msg)
+
+onInput : (String -> Msg m) -> Attribute m
+onInput s2m = always (Events.onInput s2m)
+
+--
+
+type' : String -> Attribute m
+type' = Html.Attributes.type' >> liftAttr
+
+valueL : Lens m String -> Attribute m
+valueL msL = Lens.get msL >> Html.Attributes.value
+
+disabledAs : (a -> Bool) -> Lens m a -> Attribute m
+disabledAs a2b maL = Lens.get maL >> a2b >> Html.Attributes.disabled
+
+min : String -> Attribute m
+min = Html.Attributes.min >> liftAttr
+
+max : String -> Attribute m
+max = Html.Attributes.max >> liftAttr

@@ -7,6 +7,6 @@ counter : Lens m Int -> Html m
 counter value =
   div []
     [ button [onClick (Lens.modify value ((+) -1))] [text "-"]
-    , viewAs toString value
+    , textAs toString value
     , button [onClick (Lens.modify value ((+)  1))] [text "+"]
     ]
