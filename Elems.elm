@@ -4,8 +4,8 @@ import Array exposing (Array)
 import Dom exposing (..)
 import Lens exposing (..)
 
-elems : Lens m (Array a) -> (Lens m (Maybe a) -> a -> Html m) -> Html m
-elems values elem =
+elems : (Lens m (Maybe a) -> a -> Html m) -> Lens m (Array a) -> Html m
+elems elem values =
   values
   |> withState
        (Array.indexedMap (\i -> elem (values >>> Lens.index i))

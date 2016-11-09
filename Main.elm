@@ -3,39 +3,43 @@ import Html.App as Html
 import Dom exposing (..)
 import Lens exposing (Lens, (>>>))
 
-import Counter
-import Elems
-import Removable
-import BMI
+import Counter exposing (counter)
+import ElemsWithAdd exposing (elemsWithAdd)
+import Removable exposing (removable)
+import BMI exposing (bmi)
 
 type alias Model =
-  { bmi: BMI.Model
+  { bmis: Array BMI.Model
   , counters: Array Int
   }
 
-bmi : Lens { d | bmi : c } c
-bmi = Lens.lens .bmi (\v s -> {s | bmi = v})
-
-counters : Lens { d | counters : c } c
-counters = Lens.lens .counters (\v s -> {s | counters = v})
-
 init : Model
 init =
-  { bmi = BMI.init
+  { bmis = Array.fromList [BMI.init]
   , counters = Array.fromList [0, 1, 2, 3]
   }
 
 app : Lens s Model -> Html s
 app state =
   div []
-    [ BMI.bmi (state >>> bmi)
-    , button [onClick (Lens.modify (state >>> counters) (Array.push 0))] [text "New"]
-    , Elems.elems
-        (state >>> counters)
-        (Removable.removable Counter.counter)
+    [ elemsWithAdd
+        (removable bmi) BMI.init (state >>> bmisL)
+    , elemsWithAdd
+        (removable counter)
+        0
+        (state >>> countersL)
     ]
 
 main : Program Never
 main =
   Dom.toBeginnerProgram init app
   |> Html.beginnerProgram
+
+-- The following code could easily be compiler generated
+-- See: https://groups.google.com/d/msg/elm-dev/gFyQtgMlqrs/Ws6Ih8mFAwAJ
+
+bmisL : Lens { d | bmis : c } c
+bmisL = Lens.lens .bmis (\v s -> {s | bmis = v})
+
+countersL : Lens { d | counters : c } c
+countersL = Lens.lens .counters (\v s -> {s | counters = v})
