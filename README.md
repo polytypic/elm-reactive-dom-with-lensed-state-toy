@@ -25,8 +25,8 @@ functions of child components and an `update` function that similarly calls the
 write quite a bit of boilerplate code to "compose" components.  Indeed, Elm
 components are only composable by brute-force.
 
-Now, with approach illustrated in this repository, each component essentially
-consists only of a single function.
+Now, with the approach illustrated in this repository, each component
+essentially consists only of a single function.
 
 Instead of returning just VDOM, the single function returns "reactive" VDOM that
 can automatically update when the underlying state changes.
