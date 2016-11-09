@@ -27,7 +27,7 @@ toBeginnerProgram : m -> (Lens m m -> Html m) -> { model: m, view: m -> Html.Htm
 toBeginnerProgram m html =
   { model = m
   , view = html Lens.identity
-  , update = \u m -> u m
+  , update = Basics.identity
   }
 
 --
