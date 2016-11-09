@@ -21,10 +21,6 @@ liftElem html attrs htmls m =
   html (attrs |> List.map (\attr -> attr m))
        (htmls |> List.map (\html -> html m))
 
-liftAttr : Html.Attribute (Msg m) ->
-                Attribute      m
-liftAttr attr = always attr
-
 --
 
 toBeginnerProgram : m -> (Lens m m -> Html m) -> { model: m, view: m -> Html.Html (Msg m), update: Msg m -> m -> m }
@@ -37,7 +33,7 @@ toBeginnerProgram m html =
 --
 
 text : String -> Html m
-text s = always (Html.text s)
+text = Html.text >> always
 
 textL : Lens m String -> Html m
 textL msL = Lens.get msL >> Html.text
@@ -67,15 +63,15 @@ span = liftElem Html.span
 --
 
 onClick : Msg m -> Attribute m
-onClick msg = always (Events.onClick msg)
+onClick = Events.onClick >> always
 
 onInput : (String -> Msg m) -> Attribute m
-onInput s2m = always (Events.onInput s2m)
+onInput = Events.onInput >> always
 
 --
 
 type' : String -> Attribute m
-type' = Html.Attributes.type' >> liftAttr
+type' = Html.Attributes.type' >> always
 
 valueL : Lens m String -> Attribute m
 valueL msL = Lens.get msL >> Html.Attributes.value
@@ -84,7 +80,7 @@ disabledAs : (a -> Bool) -> Lens m a -> Attribute m
 disabledAs a2b maL = Lens.get maL >> a2b >> Html.Attributes.disabled
 
 min : String -> Attribute m
-min = Html.Attributes.min >> liftAttr
+min = Html.Attributes.min >> always
 
 max : String -> Attribute m
-max = Html.Attributes.max >> liftAttr
+max = Html.Attributes.max >> always
