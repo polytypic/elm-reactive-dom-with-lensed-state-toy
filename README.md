@@ -12,6 +12,6 @@ open http://localhost:8000/Main.elm
 
 ## WTF?
 
-This is **_toy_** example meant to illustrate how one can create composable
+This is a **_toy_** example meant to illustrate how one can create composable
 components using reactive dom and lensed state.  This is absolutely not a
 serious implementation of the approach.
