@@ -17,8 +17,8 @@ bmi state =
     , div []
        [ text "bmi: "
        , state
-         |> withState (\s ->
-              text (toString (round (toFloat s.weight / (toFloat (s.height * s.height) * 0.0001)))))
+         |> withState (\{height, weight} ->
+              text (toString (round (toFloat weight / (toFloat (height * height) * 0.0001)))))
        ]
     ]
 
