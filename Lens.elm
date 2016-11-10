@@ -15,7 +15,7 @@ modify : Lens s a -> (a -> a) -> s -> s
 modify l = l.modify
 
 set : Lens s a -> a -> s -> s
-set saL a = modify saL (\_ -> a)
+set saL a = modify saL (always a)
 
 lens : (a -> b) -> (b -> a -> a) -> Lens a b
 lens get set =
@@ -24,7 +24,7 @@ lens get set =
   }
 
 iso : (a -> b) -> (b -> a) -> Lens a b
-iso a2b b2a = lens a2b (\b _ -> b2a b)
+iso a2b b2a = lens a2b (b2a >> always)
 
 (>>>) : Lens a b -> Lens b c -> Lens a c
 (>>>) abL bcL =
