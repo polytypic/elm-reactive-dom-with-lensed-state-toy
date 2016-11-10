@@ -1,17 +1,36 @@
 module Dom exposing (..)
 
-import Lens exposing (Lens)
 import Html
 import Html.Attributes
 import Html.Events as Events
+import Lens exposing (Lens)
 
 --
 
-type alias Msg m = m -> m
+type alias Msg model = model -> model
 
-type alias Html m = m -> Html.Html (Msg m)
+type alias Html model = model -> Html.Html (Msg model)
 
-type alias Attribute m = m -> Html.Attribute (Msg m)
+type alias Attribute model = model -> Html.Attribute (Msg model)
+
+--
+
+toBeginnerProgram : model
+                    -> (Lens model model -> Html model)
+                    -> { model: model
+                       , view: model -> Html.Html (Msg model)
+                       , update: Msg model -> model -> model
+                       }
+toBeginnerProgram model dom =
+  { model = model
+  , view = dom Lens.identity
+  , update = Basics.identity
+  }
+
+--
+
+withState : (a -> m -> r) -> Lens m a -> m -> r
+withState a2r maL m = a2r (Lens.get maL m) m
 
 --
 
@@ -23,15 +42,6 @@ liftElem html attrs htmls m =
 
 --
 
-toBeginnerProgram : m -> (Lens m m -> Html m) -> { model: m, view: m -> Html.Html (Msg m), update: Msg m -> m -> m }
-toBeginnerProgram m html =
-  { model = m
-  , view = html Lens.identity
-  , update = Basics.identity
-  }
-
---
-
 text : String -> Html m
 text = Html.text >> always
 
@@ -40,11 +50,6 @@ textL msL = Lens.get msL >> Html.text
 
 textAs : (a -> String) -> Lens m a -> Html m
 textAs a2s maL = Lens.get maL >> a2s >> Html.text
-
---
-
-withState : (a -> m -> r) -> Lens m a -> m -> r
-withState a2r maL m = a2r (Lens.get maL m) m
 
 --
 
