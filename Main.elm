@@ -22,12 +22,8 @@ init =
 app : Lens s Model -> Html s
 app state =
   div []
-    [ elemsWithAdd
-        (removable bmi) BMI.init (state >>> bmisL)
-    , elemsWithAdd
-        (removable counter)
-        0
-        (state >>> countersL)
+    [ elemsWithAdd (removable bmi)     BMI.init (state >>> bmisL)
+    , elemsWithAdd (removable counter) 0        (state >>> countersL)
     ]
 
 main : Program Never
